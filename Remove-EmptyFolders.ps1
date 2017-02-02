@@ -301,11 +301,16 @@ If this parameter is used in the remove empty folders command, an audible beep
 will occur, if any deletions are made by Remove-EmptyFolders.
 
 .OUTPUTS
+Deletes empty folders.
 Displays results about deleting empty folders in console, and if any deletions were
 made, writes or updates a logfile (deleted_folders.txt) at $env:temp. The filename
 of the log-file can be set with the -FileName parameter (a filename with a .txt
 ending is recommended) and the default output destination folder may be changed with
 the -Output parameter.
+
+
+    Default values (the log-file creation/updating procedure only occurs if 
+    deletion(s) is/are made by Remove-EmptyFolders):
 
 
         $env:temp\deleted_folders.txt       : TXT-file     : deleted_folders.txt
