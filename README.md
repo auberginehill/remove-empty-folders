@@ -110,7 +110,7 @@
                 <p>
                     <li>
                         <h5>Parameter <code>-FileName</code></h5>
-                        <p>with an alias <code>-File</code>. The filename of the log-file can be set with the <code>-FileName</code> parameter (a filename with a <code>.txt</code> ending is recommended, the default filename is <code>deleted_folders.txt</code>). During the possibly invoked log-file creation procedure Remove-EmptyFolders tries to preserve any pre-existing content rather than overwrite the specified file, so if the <code>-FileName</code> parameter points to an existing file, new og-info data is appended to the end of that file. If the filename includes space characters, please enclose the filename in quotation marks (single or double).</p>
+                        <p>with an alias <code>-File</code>. The filename of the log-file can be set with the <code>-FileName</code> parameter (a filename with a <code>.txt</code> ending is recommended, the default filename is <code>deleted_folders.txt</code>). During the possibly invoked log-file creation procedure Remove-EmptyFolders tries to preserve any pre-existing content rather than overwrite the specified file, so if the <code>-FileName</code> parameter points to an existing file, new log-info data is appended to the end of that file. If the filename includes space characters, please enclose the filename in quotation marks (single or double).</p>
                     </li>
                 </p>
                 <p>
@@ -141,7 +141,7 @@
         <th>:arrow_right:</th>
         <td style="padding:6px">
             <ul>
-                <li>Displays results about deleting empty folders in console, and if any deletions were made, writes or updates a logfile (<code>deleted_folders.txt</code>) at <code>$env:temp</code>. The filename of the log-file can be set with the <code>-FileName</code> parameter (a filename with a <code>.txt</code> ending is recommended) and the default output destination folder may be changed with the <code>-Output</code> parameter.</li>
+                <li>Deletes empty folders.</li>
             </ul>
         </td>
     </tr>
@@ -149,6 +149,9 @@
         <th></th>
         <td style="padding:6px">
             <ul>
+                <p>
+                    <li>Displays results about deleting empty folders in console, and if any deletions were made, writes or updates a logfile (<code>deleted_folders.txt</code>) at <code>$env:temp</code>. The filename of the log-file can be set with the <code>-FileName</code> parameter (a filename with a <code>.txt</code> ending is recommended) and the default output destination folder may be changed with the <code>-Output</code> parameter.</li>
+                </p>            
                 <p>
                     <li>Default values (the log-file creation/updating procedure only occurs if deletion(s) is/are made by Remove-EmptyFolders):</li>
                 </p>
