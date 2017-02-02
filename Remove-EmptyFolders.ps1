@@ -297,8 +297,8 @@ first level (as indicated with the -Path parameter with the common command "dir"
 for example) are deleted.
 
 .PARAMETER Audio
-If this parameter is used in the remove empty folders command, an audible beep
-will occur, if any deletions were made by Remove-EmptyFolders.
+If this parameter is used in the remove empty folders command, an audible beep 
+will occur, if any deletions are made by Remove-EmptyFolders.
 
 .OUTPUTS
 Displays results about deleting empty folders in console, and if any deletions were
