@@ -32,11 +32,11 @@
    </tr>
    <tr>
       <td style="padding:6px"><strong>Description:</strong></td>
-      <td style="padding:6px">Remove-EmptyFolders searches for empty folders from a directory specified with the <code>-Path</code> parameter. By default the search is limited to the first directory level (i.e. the search and removal of the empty folders is done non-recursively), but if a <code>-Recurse</code> parameter is added to the launching command, Remove-EmptyFolders will remove empty folders from the subdirectories as well (i.e. the search and removal is done recursively). If no <code>-Path</code> parameter is provided, Remove-EmptyFolders will search for empty folders from the current temporary file location (<code>$env:temp</code>).
+      <td style="padding:6px">Remove-EmptyFolders searches for empty folders from a directory specified with the <code>-Path</code> parameter. By default the search is limited to the first directory level (i.e. the search and removal of the empty folders is done non-recursively), but if a <code>-Recurse</code> parameter is added to the launching command, Remove-EmptyFolders will remove empty folders from the subdirectories as well (i.e. the search and removal is done recursively).
       <br />
       <br />If deletions are made, a log-file (<code>deleted_folders.txt</code> by default) is created to <code>$env:temp</code>, which points to the current temporary file location and is set in the system (– for more information about <code>$env:temp</code>, please see the Notes section). The filename of the log-file can be set with the <code>-FileName</code> parameter (a filename with a <code>.txt</code> ending is recommended) and the default output destination folder may be changed with the <code>-Output</code> parameter. During the possibly invoked log-file creation procedure Remove-EmptyFolders tries to preserve any pre-existing content rather than overwrite the specified file, so if the <code>-FileName</code> parameter points to an existing file, new log-info data is appended to the end of that file.
       <br />
-      <br />If the <code>-Audio</code> parareter has been used, an audible beep will be emitted after Remove-EmptyFolders has deleted one or more folders. Please note that if any of the parameter values (after the parameter name itself) includes space characters, the value should be enclosed in quotation marks (single or double) so that PowerShell can interpret the command correctly.</td>
+      <br />To invoke a simulation run, where no folders would be deleted in any circumstances, a parameter <code>-WhatIf</code> may be added to the launching command. If the <code>-Audio</code> parameter has been used, an audible beep would be emitted after Remove-EmptyFolders has deleted one or more folders. Please note that if any of the parameter values (after the parameter name itself) includes space characters, the value should be enclosed in quotation marks (single or double) so that PowerShell can interpret the command correctly.</td>
    </tr>
    <tr>
       <td style="padding:6px"><strong>Homepage:</strong></td>
@@ -45,7 +45,7 @@
    </tr>
    <tr>
       <td style="padding:6px"><strong>Version:</strong></td>
-      <td style="padding:6px">1.0</td>
+      <td style="padding:6px">1.1</td>
    </tr>
    <tr>
         <td style="padding:6px"><strong>Sources:</strong></td>
@@ -62,6 +62,10 @@
                 <tr>
                     <td style="padding:6px">Mike F Robbins:</td>
                     <td style="padding:6px"><a href="http://mikefrobbins.com/2015/03/31/powershell-advanced-functions-can-we-build-them-better-with-parameter-validation-yes-we-can/">PowerShell Advanced Functions: Can we build them better?</a></td>
+                </tr>
+                <tr>
+                    <td style="padding:6px">Lee Holmes:</td>
+                    <td style="padding:6px"><a href="http://www.leeholmes.com/guide">Windows PowerShell Cookbook (O'Reilly)</a>: Get-FileHash <a href="http://poshcode.org/2154">script</a></td>
                 </tr>
             </table>
         </td>
@@ -93,8 +97,8 @@
             <ul>
                 <li>
                     <h5>Parameter <code>-Path</code></h5>
-                    <p>with aliases <code>-Start</code>, <code>-Begin</code>, <code>-Folder</code>, and <code>-From</code>. The <code>-Path</code> parameter determines the starting point of the empty folder analyzation. The <code>-Path</code> parameter also accepts a collection of path names (separated by a comma). It's not mandatory to write <code>-Path</code> in the remove empty folders command to invoke the <code>-Path</code> parameter, as is shown in the Examples below, since Remove-EmptyFolders is trying to decipher the inputted queries as good as it is machinely possible within a 30 KB size limit.</p>
-                    <p>The paths should be valid file system paths to a directory (a full path name of a directory (i.e. folder path such as <code>C:\Windows</code>)). In case the path name includes space characters, please enclose the path name in quotation marks (single or double). If a collection of path names is defined for the <code>-Path</code> parameter, please separate the individual path names with a comma. The <code>-Path</code> parameter also takes an array of strings for paths and objects could be piped to this parameter, too. If no path is defined in the command launching Remove-EmptyFolders <code>$env:temp</code> gets searched for empty folders (and the found empty folders under <code>$env:temp</code> would be deleted). How deeply the filesystem structure is analysed (and how deeply buried empty folders are deleted) is toggled with the <code>-Recurse</code> parameter.</p>
+                    <p>with aliases <code>-Start</code>, <code>-Begin</code>, <code>-Folder</code>, and <code>-From</code>. The <code>-Path</code> parameter determines the starting point of the empty folder analyzation. The <code>-Path</code> parameter also accepts a collection of path names (separated by a comma). It's not mandatory to write <code>-Path</code> in the remove empty folders command to invoke the <code>-Path</code> parameter, as is shown in the Examples below, since Remove-EmptyFolders is trying to decipher the inputted queries as good as it is machinely possible within a 40 KB size limit.</p>
+                    <p>The paths should be valid file system paths to a directory (a full path name of a directory (i.e. folder path such as <code>C:\Windows</code>)). In case the path name includes space characters, please enclose the path name in quotation marks (single or double). If a collection of path names is defined for the <code>-Path</code> parameter, please separate the individual path names with a comma. The <code>-Path</code> parameter also takes an array of strings for paths and objects could be piped to this parameter, too. If no path is defined in the command launching Remove-EmptyFolders the user will be prompted to enter a <code>-Path</code> value. How deeply the filesystem structure is analysed (and how deeply buried empty folders are deleted) is toggled with the <code>-Recurse</code> parameter.</p>
                 </li>
             </ul>
         </td>
@@ -124,10 +128,16 @@
                 </p>
                 <p>
                     <li>
+                        <h5>Parameter <code>-WhatIf</code></h5>
+                        <p>The parameter <code>-WhatIf</code> toggles whether the deletion of folders is actually done or not. By adding the <code>-WhatIf</code> parameter to the launching command only a simulation run is performed. When the <code>-WhatIf</code> parameter is added to the command launching Remove-EmptyFolders, a <code>-WhatIf</code> parameter is also added to the underlying <code>Remove-Item</code> cmdlet that is deleting the directories in Remove-EmptyFolders. In such case and if indeed empty folder(s) was/were detected by Remove-EmptyFolders, a list of directory paths that would be deleted by Remove-EmptyFolders is displayed in console ("What if:"). Since no real deletions aren't made, the script will return an "Exit Code 1" (A simulation run: the <code>-WhatIf</code> parameter was used).</p>
+                    </li>
+                </p>
+                <p>
+                    <li>
                         <h5>Parameter <code>-Audio</code></h5>
                         <p>If this parameter is used in the remove empty folders command, an audible beep will occur, if any deletions are made by Remove-EmptyFolders.</p>
                     </li>
-                </p>                
+                </p>
             </ul>
         </td>
     </tr>
@@ -153,7 +163,7 @@
             <ul>
                 <p>
                     <li>Displays results about deleting empty folders in console, and if any deletions were made, writes or updates a logfile (<code>deleted_folders.txt</code>) at <code>$env:temp</code>. The filename of the log-file can be set with the <code>-FileName</code> parameter (a filename with a <code>.txt</code> ending is recommended) and the default output destination folder may be changed with the <code>-Output</code> parameter.</li>
-                </p>            
+                </p>
                 <p>
                     <li>Default values (the log-file creation/updating procedure only occurs if deletion(s) is/are made by Remove-EmptyFolders):</li>
                 </p>
@@ -197,7 +207,6 @@
         <td style="padding:6px">
             <ul>
                 <p>
-                    <li>Please note that the default starting point location (the '<code>-Path</code>' variable value) is defined at line 12 for the <code>-Path</code> parameter with the <code>$Path</code> variable.</li>
                     <li>Please also note that the possibly generated log-file is created in a directory, which is end-user settable in each remove empty folders command with the <code>-Output</code> parameter. The default save location is defined with the <code>$Output</code> variable (at line 14). The <code>$env:temp</code> variable points to the current temp folder. The default value of the <code>$env:temp</code> variable is <code>C:\Users\&lt;username&gt;\AppData\Local\Temp</code> (i.e. each user account has their own separate temp folder at path <code>%USERPROFILE%\AppData\Local\Temp</code>). To see the current temp path, for instance a command
                     <br />
                     <br /><code>[System.IO.Path]::GetTempPath()</code>
@@ -233,26 +242,26 @@
         <td style="padding:6px">
             <ol>
                 <p>
-                    <li><code>./Remove-EmptyFolders</code><br />
-                    Run the script. Please notice to insert <code>./</code> or <code>.\</code> before the script name. Uses the default location (<code>$env:temp</code>) as the starting point for 'removing the empty folders' and for storing the generated log-file(, if any deletions were made). Searches for empty folders at the first level of <code>$env:temp</code> (i.e. search is done non-recursively, similarly to a common command "<code>dir</code>", for example). During the possibly invoked log-file creation procedure Remove-EmptyFolders tries to preserve any pre-existing content rather than overwrite the file, so if the default log-file (<code>deleted_folders.txt</code>) already exists, new log-info data is appended to the end of that file.</li>
+                    <li><code>./Remove-EmptyFolders -Path "E:\chiore" -Output "C:\Scripts"</code><br />
+                    Run the script. Please notice to insert <code>./</code> or <code>.\</code> before the script name. Removes all empty folders from the first level of <code>E:\chiore</code> (i.e. those empty folders, which would be listed with the "<code>dir E:\chiore</code>" command, and if any deletions were made, saves the log-file to <code>C:\Scripts</code> with the default filename (<code>deleted_folders.txt</code>). During the possibly invoked log-file creation procedure Remove-EmptyFolders tries to preserve any pre-existing content rather than overwrite the file, so if the default log-file (<code>deleted_folders.txt</code>) already exists, new log-info data is appended to the end of that file. Please note, that <code>-Path</code> can be omitted in this example, because
+                    <br />
+                    <br /><code>./Remove-EmptyFolders "E:\chiore" -Output "C:\Scripts"</code>
+                    <br />
+                    <br />will result in the exact same outcome.</li>
                 </p>
                 <p>
                     <li><code>help ./Remove-EmptyFolders -Full</code><br />
                     Display the help file.</li>
-                </p>    
-                <p>
-                    <li><code>./Remove-EmptyFolders -Path "E:\chiore" -Output "C:\Scripts"</code><br />
-                    Run the script and remove all empty folders from the first level of <code>E:\chiore</code> (i.e. those empty folders, which would be listed with the "<code>dir E:\chiore</code>" command, and if any deletions were made, save the log-file to <code>C:\Scripts</code> with the default filename (<code>deleted_folders.txt</code>). Please note, that <code>-Path</code> can be omitted in this example, because
-                    <br />
-                    <br /><code>./Remove-EmptyFolders "E:\chiore" -Output "C:\Scripts"</code>
-                    <br />
-                    <br />will result in the exact same outcome.
                 </p>
                 <p>
-                    <li><code>./Remove-EmptyFolders -Path "C:\Users\Dropbox" -Recurse</code><br />
-                    Will delete all empty folders from <code>C:\Users\Dropbox</code> and also from all sub-directories of the sub-directories of the sub-directories and their sub-directories as well (the search is done recursively). If any deletions were made, the log-file is saved to the default location (<code>$env:temp</code>) with the default filename (<code>deleted_folders.txt</code>). The <code>-Path</code> variable value is case-insensitive (as is most of the PowerShell), and since the path name doesn't contain any space characters, it doesn't need to be enveloped with quotation marks. Actually the <code>-Path</code> parameter may be left out from the command, too, since, for example,
+                    <li><code>./Remove-EmptyFolders -Path "C:\Users\Dropbox", "C:\dc01" -Recurse -WhatIf</code><br />
+                    Because the <code>-WhatIf</code> parameter was used, only a simulation run occurs, so no folders would be deleted in any circumstances. The script will look for empty folders from <code>C:\Users\Dropbox</code> and <code>C:\dc01</code> and will add all sub-directories of the sub-directories of the sub-directories and their sub-directories as well from those directories to the list of folders to process (the search for other folders to process is done recursively).
                     <br />
-                    <br /><code>./Remove-EmptyFolders c:\users\dROPBOx -Recurse</code>
+                    <br />If empty folders aren't found, the result would be identical regardless whether the <code>-WhatIf</code> parameter was used or not. If, however, empty folders were indeed found, only an indication of what the script would delete ("What if:") is displayed.
+                    <br />
+                    <br />The Path variable value is case-insensitive (as is most of the PowerShell), and since the path names don't contain any space characters, they don't need to be enveloped with quotation marks. Actually the -Path parameter may be left out from the command, too, since, for example,
+                    <br />
+                    <br /><code>./Remove-EmptyFolders c:\users\dROPBOx, c:\DC01 -Recurse -WhatIf</code>
                     <br />
                     <br />is the exact same command in nature.</li>
                 </p>
@@ -298,7 +307,7 @@
                 </p>
                 <p>
                     <li><code>New-Item -ItemType File -Path C:\Temp\Remove-EmptyFolders.ps1</code><br />
-                    Creates an empty ps1-file to the <code>C:\Temp</code> directory. The <code>New-Item</code> cmdlet has an inherent <code>-NoClobber</code> mode built into it, so that the procedure will halt, if overwriting (replacing the contents) of an existing file is about to happen. Overwriting a file with the <code>New-Item</code> cmdlet requires using the <code>Force</code>. If the path name includes space characters, please enclose the path name in quotation marks (single or double):
+                    Creates an empty ps1-file to the <code>C:\Temp</code> directory. The <code>New-Item</code> cmdlet has an inherent <code>-NoClobber</code> mode built into it, so that the procedure will halt, if overwriting (replacing the contents) of an existing file is about to happen. Overwriting a file with the <code>New-Item</code> cmdlet requires using the <code>Force</code>. If the path name and/or the filename includes space characters, please enclose the whole <code>-Path</code> parameter value in quotation marks (single or double):
                         <ol>
                             <br /><code>New-Item -ItemType File -Path "C:\Folder Name\Remove-EmptyFolders.ps1"</code>
                         </ol>
@@ -344,11 +353,14 @@
         <td style="padding:6px"><a href="https://github.com/auberginehill/remove-empty-folders">Script Homepage</a></td>
     </tr>
     <tr>
-        <th rowspan="7"></th>
+        <th rowspan="10"></th>
         <td style="padding:6px">Mekac: <a href="https://social.technet.microsoft.com/Forums/en-US/4d78bba6-084a-4a41-8d54-6dde2408535f/get-folder-where-access-is-denied?forum=winserverpowershell">Get folder where Access is denied</a></td>
     </tr>
     <tr>
         <td style="padding:6px">Mike F Robbins: <a href="http://mikefrobbins.com/2015/03/31/powershell-advanced-functions-can-we-build-them-better-with-parameter-validation-yes-we-can/">PowerShell Advanced Functions: Can we build them better?</a></td>
+    </tr>
+    <tr>
+        <td style="padding:6px">Lee Holmes: <a href="http://www.leeholmes.com/guide">Windows PowerShell Cookbook (O'Reilly)</a>: Get-FileHash <a href="http://poshcode.org/2154">script</a></td>
     </tr>
     <tr>
         <td style="padding:6px"><a href="https://gist.github.com/nedarb/840f9f0c9a2e6014d38f">RemoveEmptyFolders.ps1</a></td>
@@ -361,6 +373,12 @@
     </tr>
     <tr>
         <td style="padding:6px"><a href="https://msdn.microsoft.com/en-us/powershell/reference/5.1/microsoft.powershell.core/about/about_functions_advanced_parameters">About Functions Advanced Parameters</a></td>
+    </tr>
+    <tr>
+        <td style="padding:6px"><a href="https://blogs.technet.microsoft.com/heyscriptingguy/2013/09/21/powertip-use-powershell-to-send-beep-to-console/">PowerTip: Use PowerShell to Send Beep to Console</a></td>
+    </tr>
+    <tr>
+        <td style="padding:6px"><a href="http://poshcode.org/2154">Get-FileHash.ps1</a></td>
     </tr>
     <tr>
         <td style="padding:6px">ASCII Art: <a href="http://www.figlet.org/">http://www.figlet.org/</a> and <a href="http://www.network-science.de/ascii/">ASCII Art Text Generator</a></td>
@@ -378,7 +396,7 @@
         <td style="padding:6px"><a href="https://gist.github.com/auberginehill/aa812bfa79fa19fbd880b97bdc22e2c1">Disable-Defrag</a></td>
     </tr>
     <tr>
-        <th rowspan="22"></th>
+        <th rowspan="24"></th>
         <td style="padding:6px"><a href="https://github.com/auberginehill/firefox-customization-files">Firefox Customization Files</a></td>
     </tr>
     <tr>
@@ -395,6 +413,9 @@
     </tr>
     <tr>
         <td style="padding:6px"><a href="https://github.com/auberginehill/get-directory-size">Get-DirectorySize</a></td>
+    </tr>
+    <tr>
+        <td style="padding:6px"><a href="https://github.com/auberginehill/get-hash-value">Get-HashValue</a></td>
     </tr>
     <tr>
         <td style="padding:6px"><a href="https://github.com/auberginehill/get-installed-programs">Get-InstalledPrograms</a></td>
@@ -425,6 +446,9 @@
     </tr>
     <tr>
         <td style="padding:6px"><a href="https://github.com/auberginehill/java-update">Java-Update</a></td>
+    </tr>
+    <tr>
+        <td style="padding:6px"><a href="https://github.com/auberginehill/remove-duplicate-files">Remove-DuplicateFiles</a></td>
     </tr>
     <tr>
         <td style="padding:6px"><a href="https://gist.github.com/auberginehill/13bb9f56dc0882bf5e85a8f88ccd4610">Remove-EmptyFoldersLite</a></td>
