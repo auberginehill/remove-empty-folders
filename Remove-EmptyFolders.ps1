@@ -208,7 +208,7 @@ Process {
 End {
 
                 # Do the background work for natural language
-                If ($unique_folders.Count -gt 1) { $item_text = "folders" } Else { $item_text = "folder" }
+                If ($total_number_of_folders -gt 1) { $item_text = "folders" } Else { $item_text = "folder" }
                 $empty_line | Out-String
 
                     # Write the operational stats in console
@@ -253,6 +253,7 @@ End {
     If ($empty_folders.Count -ge 1) {
 
                 $unique_empty_folders = $empty_folders | select -ExpandProperty FullName -Unique
+                If ($unique_empty_folders.Count -gt 1) { $folder_text = "folders" } Else { $folder_text = "folder" }
                 ForEach ($directory in $unique_empty_folders) {
 
                                         # Create a list of the empty folders
@@ -269,6 +270,9 @@ End {
                                         If ((Test-Path $unique_empty_folders) -eq $true) {
                                                         If ($WhatIf) {
                                                             $empty_line | Out-String
+                                                            $notify_text = "Found $($unique_empty_folders.Count) empty $folder_text." 
+                                                            Write-Output $notify_text
+                                                            $empty_line | Out-String
                                                             "Exit Code 1: A simulation run (the -WhatIf parameter was used), didn't touch any folders."
                                                             Return $empty_line
                                                         } Else {
@@ -280,9 +284,12 @@ End {
                                         } # Else (Test-Path $empty_folders)
 
                 # Write the deleted directory paths in console
+                $notify_text = "Deleted $($unique_empty_folders.Count) empty $folder_text."     
                 $deleted_folders.PSObject.TypeNames.Insert(0,"Deleted Empty Folders")
                 Write-Output $deleted_folders
                 $empty_line | Out-String
+                Write-Output $notify_text
+
 
                         # Write the deleted directory paths to a text file (located at the current temp-folder or the location is defined with the -Output parameter)
                         If ((Test-Path "$txt_file") -eq $false) {
@@ -483,7 +490,6 @@ http://www.eightforums.com/tutorials/23500-temporary-files-folder-change-locatio
 
 .EXAMPLE
 ./Remove-EmptyFolders -Path "E:\chiore" -Output "C:\Scripts"
-
 Run the script. Please notice to insert ./ or .\ before the script name.
 Removes all empty folders from the first level of E:\chiore (i.e. those empty
 folders, which would be listed with the "dir E:\chiore" command, and if any
@@ -504,7 +510,6 @@ Display the help file.
 
 .EXAMPLE
 ./Remove-EmptyFolders -Path "C:\Users\Dropbox", "C:\dc01" -Recurse -WhatIf
-
 Because the -WhatIf parameter was used, only a simulation run occurs, so no folders
 would be deleted in any circumstances. The script will look for empty folders from
 C:\Users\Dropbox and C:\dc01 and will add all sub-directories of the sub-directories
@@ -527,7 +532,6 @@ is the exact same command in nature.
 
 .EXAMPLE
 .\Remove-EmptyFolders.ps1 -From C:\dc01 -ReportPath C:\Scripts -File log.txt -Recurse -Audio
-
 Run the script and search recursively for empty folders from C:\dc01 and delete all
 recursively found empty folders under C:\dc01. If any deletions were made, the
 log-file would be saved to C:\Scripts with the filename log.txt and an audible beep
